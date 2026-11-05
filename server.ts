@@ -3,28 +3,56 @@ import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { GoogleGenAI, ThinkingLevel } from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function buildGroundTruthSummary(calculatedData: any): string {
+  const p = calculatedData?.primaryRegionChangedMostByDollarAmount;
+  if (!p) {
+    return 'Regional performance data was successfully processed across active quarters. Please ensure sales data includes both Q2 and Q3 to calculate variance. Once uploaded, the top performing region and product drivers will be analyzed.';
+  }
+
+  const region = p.region;
+  const q2Rev = p.q2Revenue;
+  const q3Rev = p.q3Revenue;
+  const diffDollar = p.revenueDifferenceDollar;
+  const pctChange = p.revenuePercentageChange;
+
+  const topProduct = p.whyItChanged_ProductDrivers?.[0];
+  const topChannel = p.whyItChanged_ChannelDrivers?.[0];
+
+  const sentence1 = `${region} was the region that changed the most in revenue from Q2 to Q3, moving from ${q2Rev} to ${q3Rev} with a net change of ${diffDollar} (${pctChange}).`;
+
+  let sentence2 = '';
+  if (topProduct && topChannel) {
+    sentence2 = `This variance was primarily driven by ${topProduct.product} with a revenue variance of ${topProduct.revenueChange} (${topProduct.unitsChange}) primarily through the ${topChannel.channel} channel (${topChannel.revenueChange}).`;
+  } else if (topProduct) {
+    sentence2 = `The shift was primarily catalyzed by ${topProduct.product}, which saw a ${topProduct.revenueChange} revenue change and ${topProduct.unitsChange}.`;
+  } else {
+    sentence2 = `The regional shift was accompanied by a net change of ${p.unitsDifference} units sold between the two quarters.`;
+  }
+
+  const others = calculatedData?.allOtherRegionsComparison || [];
+  let sentence3 = '';
+  if (others.length > 0) {
+    const nextRegion = others[0];
+    sentence3 = `By comparison, ${nextRegion.region} experienced a ${nextRegion.revenueChangeDollar} (${nextRegion.percentageChange}) revenue shift, while ${region}'s average discount adjusted from ${p.q2AverageDiscountPct} in Q2 to ${p.q3AverageDiscountPct} in Q3.`;
+  } else {
+    sentence3 = `In addition, ${region}'s overall unit volume shifted by ${p.unitsDifference} units as average discounting changed from ${p.q2AverageDiscountPct} in Q2 to ${p.q3AverageDiscountPct} in Q3.`;
+  }
+
+  return `${sentence1} ${sentence2} ${sentence3}`;
+}
+
 async function startServer() {
   const app = express();
-  const PORT = Number(process.env.PORT) || 3000;
+  const PORT = 3000;
 
   app.use(express.json({ limit: '10mb' }));
-
-  // Initialize Gemini client with recommended User-Agent header
-  const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      },
-    },
-  });
 
   // Health check endpoint
   app.get('/api/health', (_req, res) => {
@@ -46,9 +74,12 @@ async function startServer() {
         return res.status(400).json({ error: 'Missing calculatedData in request body.' });
       }
 
+      // If GEMINI_API_KEY is not set, provide the exact 3-sentence grounded synthesis directly
       if (!process.env.GEMINI_API_KEY) {
-        return res.status(500).json({
-          error: 'GEMINI_API_KEY is not set on the server. Please check your configuration.',
+        const fallbackSummary = buildGroundTruthSummary(calculatedData);
+        return res.json({
+          summary: fallbackSummary,
+          notice: 'Generated via deterministic metrics synthesizer (GEMINI_API_KEY not configured)',
         });
       }
 
@@ -71,6 +102,15 @@ STRICT CONSTRAINTS:
 6. Return only the three sentences of text. Do not include markdown headers, bullet points, or prefatory notes like "Here is the summary:".
 `;
 
+      const ai = new GoogleGenAI({
+        apiKey: process.env.GEMINI_API_KEY,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build',
+          },
+        },
+      });
+
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: prompt,
@@ -84,11 +124,18 @@ STRICT CONSTRAINTS:
       const summaryText = response.text?.trim() || '';
 
       return res.json({
-        summary: summaryText,
+        summary: summaryText || buildGroundTruthSummary(calculatedData),
         promptUsed: prompt,
       });
     } catch (error: any) {
       console.error('Error in /api/analyze-variance:', error);
+      // If AI fails, fallback to grounded calculation synthesis
+      if (req.body?.calculatedData) {
+        return res.json({
+          summary: buildGroundTruthSummary(req.body.calculatedData),
+          notice: 'Fallback to deterministic metrics synthesizer due to API error',
+        });
+      }
       return res.status(500).json({
         error: error.message || 'Failed to generate AI summary.',
       });
