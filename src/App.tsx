@@ -104,12 +104,12 @@ export default function App() {
   const topRegion = varianceSummary.mostChangedRegion;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-[#051613] text-slate-100 flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
       {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30">
+      <header className="border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
               <BarChart3 className="w-5 h-5" />
             </div>
             <div>
@@ -117,7 +117,7 @@ export default function App() {
                 <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
                   SalesPulse
                 </h1>
-                <span className="text-[10px] font-semibold tracking-wide uppercase px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="text-[10px] font-semibold tracking-wide uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                   Regional Variance
                 </span>
               </div>
@@ -131,12 +131,12 @@ export default function App() {
             {orders.length > 0 && (
               <div className="hidden md:flex items-center gap-3 text-slate-400 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg">
                 <div className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                  <Calendar className="w-3.5 h-3.5 text-emerald-400" />
                   <span>{matrix.quarters.join(', ')}</span>
                 </div>
                 <span className="text-slate-700">•</span>
                 <div className="flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                  <Globe className="w-3.5 h-3.5 text-teal-400" />
                   <span>{matrix.regions.length} Regions</span>
                 </div>
               </div>
@@ -283,15 +283,15 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500 mt-10">
+      <footer className="border-t border-slate-800/80 bg-[#041210] py-6 text-center text-xs text-slate-400 mt-10">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-400">SalesPulse</span>
+            <span className="font-semibold text-slate-300">SalesPulse</span>
             <span>•</span>
             <span>Quarterly Sales Order &amp; Regional Variance Platform</span>
           </div>
           <div className="flex items-center gap-1.5 text-slate-400">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
             <span>Strictly Grounded AI Summaries via Gemini</span>
           </div>
         </div>

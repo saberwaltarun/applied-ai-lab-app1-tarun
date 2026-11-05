@@ -38,16 +38,16 @@ export const AiSummaryCard: React.FC<AiSummaryCardProps> = ({
   const topRegion = varianceSummary.mostChangedRegion;
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-indigo-950/80 via-slate-900 to-slate-900 border border-indigo-500/30 rounded-2xl p-6 shadow-2xl">
+    <div className="relative overflow-hidden bg-gradient-to-br from-[#0c2e26]/90 via-slate-900 to-slate-900 border border-emerald-500/30 rounded-2xl p-6 shadow-2xl">
       {/* Decorative ambient background glows */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 rounded-full bg-purple-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
 
       {/* Header */}
-      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-indigo-500/20">
+      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-500/20">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center text-indigo-300 shadow-inner">
-            <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
+          <div className="w-9 h-9 rounded-xl bg-emerald-600/30 border border-emerald-400/40 flex items-center justify-center text-emerald-300 shadow-inner">
+            <Sparkles className="w-5 h-5 text-emerald-400 animate-pulse" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -59,7 +59,7 @@ export const AiSummaryCard: React.FC<AiSummaryCardProps> = ({
                 Strictly Grounded
               </span>
             </div>
-            <p className="text-xs text-indigo-200/70 mt-0.5">
+            <p className="text-xs text-emerald-200/70 mt-0.5">
               Three-sentence executive brief synthesized strictly from app-calculated metrics
             </p>
           </div>
@@ -124,12 +124,12 @@ export const AiSummaryCard: React.FC<AiSummaryCardProps> = ({
         ) : summary ? (
           <div className="space-y-4">
             {/* The 3 Sentences Display */}
-            <div className="bg-slate-950/70 border border-indigo-900/50 rounded-xl p-5 shadow-inner">
+            <div className="bg-slate-950/70 border border-emerald-900/50 rounded-xl p-5 shadow-inner">
               <div className="text-slate-100 leading-relaxed text-sm space-y-2.5">
                 {sentences.length === 3 ? (
                   sentences.map((sentence, idx) => (
                     <p key={idx} className="flex items-start gap-2.5">
-                      <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-bold border border-indigo-500/40 mt-0.5">
+                      <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/40 mt-0.5">
                         {idx + 1}
                       </span>
                       <span className="text-slate-100 font-normal">{sentence}</span>
