@@ -1,0 +1,8 @@
+{
+  "name": "SalesPulse - Regional Sales & Variance Analyzer",
+  "description": "Upload sales order CSVs to visualize total revenue by region and quarter, with AI-driven Q2 to Q3 variance analysis grounded strictly in computed metrics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
